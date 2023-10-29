@@ -1,0 +1,9 @@
+### Variables
+@url=http://localhost:8080/v1
+
+### Create user
+POST {{url}}/users
+
+{
+    "name": "Daniel"
+}
