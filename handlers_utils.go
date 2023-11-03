@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"log"
 	"net/http"
 )
 
@@ -19,10 +20,19 @@ func respondWithError(w http.ResponseWriter, code int, msg string) {
 func respondWithJson(w http.ResponseWriter, code int, payload interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	data, err := json.Marshal(payload)
-	if err != nil {
-		respondWithError(w, http.StatusInternalServerError, "Can't encode to JSON: "+err.Error())
+	if checkErrorAndRespond(err, w, http.StatusInternalServerError, "Can't encode to JSON") {
 		return
 	}
+
 	w.WriteHeader(code)
 	w.Write(data)
+}
+
+func checkErrorAndRespond(err error, w http.ResponseWriter, code int, msg string) bool {
+	if err == nil {
+		return false
+	}
+	respondWithError(w, code, msg)
+	log.Println(err.Error())
+	return true
 }
