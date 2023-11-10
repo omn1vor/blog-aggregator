@@ -9,6 +9,15 @@ import (
 	"github.com/omn1vor/blog-aggregator/internal/database"
 )
 
+type feedResponse struct {
+	ID        uuid.UUID `json:"id"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+	Name      string    `json:"name"`
+	Url       string    `json:"url"`
+	UserID    uuid.UUID `json:"user_id"`
+}
+
 func (cfg *apiConfig) createFeed(w http.ResponseWriter, r *http.Request, user database.User) {
 	type feedRequest struct {
 		Name string `json:"name"`
@@ -50,4 +59,25 @@ func (cfg *apiConfig) createFeed(w http.ResponseWriter, r *http.Request, user da
 	}
 
 	respondWithJson(w, http.StatusOK, feedResponse)
+}
+
+func (cfg *apiConfig) getFeeds(w http.ResponseWriter, r *http.Request) {
+	feeds, err := cfg.DB.GetFeeds(r.Context())
+	if checkErrorAndRespond(err, w, http.StatusInternalServerError, "Error while getting feeds") {
+		return
+	}
+
+	response := []feedResponse{}
+	for _, feed := range feeds {
+		response = append(response, feedResponse{
+			ID:        feed.ID,
+			CreatedAt: feed.CreatedAt,
+			UpdatedAt: feed.UpdatedAt,
+			Name:      feed.Name,
+			Url:       feed.Url,
+			UserID:    feed.UserID,
+		})
+	}
+
+	respondWithJson(w, http.StatusOK, response)
 }
