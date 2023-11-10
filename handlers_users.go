@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"net/http"
-	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -33,8 +32,8 @@ func (cfg *apiConfig) createUser(w http.ResponseWriter, r *http.Request) {
 
 	userResponse := struct {
 		ID        uuid.UUID `json:"id"`
-		CreatedAt time.Time `json:"createdAt"`
-		UpdatedAt time.Time `json:"updatedAt"`
+		CreatedAt time.Time `json:"created_at"`
+		UpdatedAt time.Time `json:"updated_at"`
 		Name      string    `json:"name"`
 	}{
 		ID:        user.ID,
@@ -46,17 +45,7 @@ func (cfg *apiConfig) createUser(w http.ResponseWriter, r *http.Request) {
 	respondWithJson(w, http.StatusOK, userResponse)
 }
 
-func (cfg *apiConfig) getUser(w http.ResponseWriter, r *http.Request) {
-	authHeader := r.Header.Get("Authorization")
-	if authHeader == "" {
-		respondWithError(w, http.StatusUnauthorized, "Expecting an API key")
-		return
-	}
-
-	user, err := cfg.DB.GetUser(r.Context(), strings.TrimPrefix(authHeader, "ApiKey "))
-	if checkErrorAndRespond(err, w, http.StatusInternalServerError, "Error while getting user") {
-		return
-	}
+func (cfg *apiConfig) getUser(w http.ResponseWriter, r *http.Request, user database.User) {
 
 	userResponse := struct {
 		ID        uuid.UUID `json:"id"`

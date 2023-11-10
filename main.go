@@ -40,7 +40,8 @@ func main() {
 	v1.Get("/readiness", readinessHandler)
 	v1.Get("/err", errorHandler)
 	v1.Post("/users", apiConfig.createUser)
-	v1.Get("/users", apiConfig.getUser)
+	v1.Get("/users", apiConfig.middlewareAuth(apiConfig.getUser))
+	v1.Post("/feeds", apiConfig.middlewareAuth(apiConfig.createFeed))
 
 	router.Mount("/v1", v1)
 

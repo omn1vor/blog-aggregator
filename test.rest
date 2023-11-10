@@ -11,3 +11,12 @@ POST {{url}}/users
 ### Get user
 GET {{url}}/users
 Authorization: ApiKey 28d53213c38d00890c882e4bcc0acec3f6944ee19e441a51e1b8737eff392681
+
+### Create feed
+POST {{url}}/feeds
+Authorization: ApiKey 28d53213c38d00890c882e4bcc0acec3f6944ee19e441a51e1b8737eff392681
+
+{
+  "name": "The Boot.dev Blog",
+  "url": "https://blog.boot.dev/index.xml"
+}
