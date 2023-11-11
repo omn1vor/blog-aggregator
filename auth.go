@@ -1,6 +1,8 @@
 package main
 
 import (
+	"database/sql"
+	"errors"
 	"net/http"
 	"strings"
 
@@ -18,8 +20,13 @@ func (cfg *apiConfig) middlewareAuth(handler authedHandler) http.HandlerFunc {
 		}
 
 		user, err := cfg.DB.GetUser(r.Context(), apiKey)
-		if checkErrorAndRespond(err, w, http.StatusInternalServerError, "Error while getting user") {
-			return
+		if err != nil {
+			if errors.Is(err, sql.ErrNoRows) {
+				respondWithError(w, http.StatusNotFound, "User not found")
+				return
+			} else if checkErrorAndRespond(err, w, http.StatusInternalServerError, "Error while getting user") {
+				return
+			}
 		}
 		handler(w, r, user)
 	})

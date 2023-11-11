@@ -23,3 +23,19 @@ Authorization: ApiKey 28d53213c38d00890c882e4bcc0acec3f6944ee19e441a51e1b8737eff
 
 ### Get feeds
 GET {{url}}/feeds
+
+### Create feed follow
+POST {{url}}/feed_follows
+Authorization: ApiKey 28d53213c38d00890c882e4bcc0acec3f6944ee19e441a51e1b8737eff392681
+
+{
+  "feed_id": "6342c2ef-73b8-4b1d-ab95-5dda3c28e001"
+}
+
+### Get feed follows
+GET {{url}}/feed_follows
+Authorization: ApiKey 28d53213c38d00890c882e4bcc0acec3f6944ee19e441a51e1b8737eff392681
+
+### Unfollow a feed
+DELETE {{url}}/feed_follows/88afaaaf-82ed-4028-b0e2-f59915a318b3
+Authorization: ApiKey 28d53213c38d00890c882e4bcc0acec3f6944ee19e441a51e1b8737eff392681
