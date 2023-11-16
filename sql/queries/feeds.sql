@@ -6,3 +6,15 @@ RETURNING *;
 -- name: GetFeeds :many
 SELECT * FROM feeds 
 ORDER BY name;
+
+-- name: GetNextFeedsToFetch :many
+SELECT * FROM feeds
+ORDER BY COALESCE(last_fetched_at, '0001-01-01')
+LIMIT $1;
+
+-- name: MarkFeedFetched :exec
+UPDATE feeds
+SET 
+    last_fetched_at = NOW(),
+    updated_at = NOW()
+WHERE id = $1;

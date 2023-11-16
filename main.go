@@ -1,10 +1,12 @@
 package main
 
 import (
+	"context"
 	"database/sql"
 	"log"
 	"net/http"
 	"os"
+	"time"
 
 	"github.com/go-chi/chi/v5"
 	"github.com/go-chi/cors"
@@ -15,7 +17,9 @@ import (
 )
 
 type apiConfig struct {
-	DB *database.Queries
+	DB                  *database.Queries
+	NumberOfFeedsToRead int
+	ReadingInterval     time.Duration
 }
 
 func main() {
@@ -30,7 +34,9 @@ func main() {
 
 	dbQueries := database.New(db)
 	apiConfig := apiConfig{
-		DB: dbQueries,
+		DB:                  dbQueries,
+		NumberOfFeedsToRead: 10,
+		ReadingInterval:     60 * time.Second,
 	}
 
 	router := chi.NewRouter()
@@ -53,6 +59,11 @@ func main() {
 		Addr:    ":" + port,
 		Handler: router,
 	}
+
+	ctx, cancel := context.WithCancel(context.Background())
+	defer cancel()
+	log.Println("Starting reading")
+	StartReadingFeeds(ctx, apiConfig)
 
 	log.Printf("Starting server on port %s\n", port)
 	log.Fatal(server.ListenAndServe())
