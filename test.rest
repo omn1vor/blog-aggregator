@@ -40,3 +40,7 @@ Authorization: ApiKey {{apiKey}}
 ### Unfollow a feed
 DELETE {{url}}/feed_follows/88afaaaf-82ed-4028-b0e2-f59915a318b3
 Authorization: ApiKey {{apiKey}}
+
+### Get posts
+GET {{url}}/posts?limit=5
+Authorization: ApiKey {{apiKey}}

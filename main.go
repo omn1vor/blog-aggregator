@@ -20,6 +20,7 @@ type apiConfig struct {
 	DB                  *database.Queries
 	NumberOfFeedsToRead int
 	ReadingInterval     time.Duration
+	PostsLimit          int
 }
 
 func main() {
@@ -37,6 +38,7 @@ func main() {
 		DB:                  dbQueries,
 		NumberOfFeedsToRead: 10,
 		ReadingInterval:     60 * time.Second,
+		PostsLimit:          20,
 	}
 
 	router := chi.NewRouter()
@@ -52,6 +54,7 @@ func main() {
 	v1.Post("/feed_follows", apiConfig.middlewareAuth(apiConfig.createFeedFollow))
 	v1.Delete("/feed_follows/{id}", apiConfig.middlewareAuth(apiConfig.deleteFeedFollow))
 	v1.Get("/feed_follows", apiConfig.middlewareAuth(apiConfig.getFeedFollows))
+	v1.Get("/posts", apiConfig.middlewareAuth(apiConfig.getPosts))
 
 	router.Mount("/v1", v1)
 

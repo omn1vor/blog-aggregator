@@ -16,7 +16,7 @@ func StartReadingFeeds(ctx context.Context, cfg apiConfig) {
 			select {
 			case <-ticker.C:
 				log.Println("Received ticker signal")
-				readFeeds(cfg)
+				readFeeds(ctx, cfg)
 			case <-ctx.Done():
 				log.Println("Received cancel signal")
 				ticker.Stop()
@@ -25,15 +25,11 @@ func StartReadingFeeds(ctx context.Context, cfg apiConfig) {
 	}()
 }
 
-func readFeeds(cfg apiConfig) {
+func readFeeds(ctx context.Context, cfg apiConfig) {
 	feedList, err := cfg.DB.GetNextFeedsToFetch(context.Background(), int32(cfg.NumberOfFeedsToRead))
 	if err != nil {
 		log.Println("Error while getting next feeds to fetch", err.Error())
 		return
 	}
-	urls := []string{}
-	for _, feed := range feedList {
-		urls = append(urls, feed.Url)
-	}
-	feeds.ReadFeeds(urls)
+	feeds.ReadFeeds(ctx, cfg.DB, feedList)
 }

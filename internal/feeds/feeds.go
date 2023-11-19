@@ -17,6 +17,7 @@ type Channel struct {
 		Title       string `xml:"title"`
 		Link        string `xml:"link"`
 		Description string `xml:"description"`
+		PublishedAt string `xml:"pubDate"`
 	} `xml:"item"`
 }
 
